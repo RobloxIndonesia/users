@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="title">Erro User - Roblox Indonesia</title>
+
+<link rel="stylesheet" href="/style/profil.css">
+<link rel="stylesheet" href="/style/halaman-utama.css">
+
+</head>
+<body>
+
+<div class="header">
+<div class="header1">
+    <button class="menu-btn" onclick="openMenu()">☰</button>
+    
+     <div id="logo1"></div>
+
+     <div class="right-icons">
+         <div id="profiles"></div>
+         <div class="search">⌕</div>
+     </div>
+</div>     
+     
+<!-- Nav -->
+<div class="nav">
+    <a id="link1"></a>
+    <a id="link2"></a>
+    <a id="link3"></a>
+    <a id="link4"></a>
+</div>
+</div>
+
+<div id="menuDropdown" class="sidebar">
+    <div class="close-btn1">
+    <div id="logo2"></div>
+    <span class="close-btn" onclick="closeMenu()">×</span>
+    </div>
+    <a id="link9"></a>
+    <a id="link10"></a>
+    <a id="link11"></a>
+    <a id="link12"></a>
+    <a id="link13"></a>
+    <a id="link14"></a>
+    <a id="link15"></a>
+    <a id="link16"></a>
+</div>
+
+<br>
+<br>
+<br>
+<br>
+
+<main>
+<section class="profil">
+ 
+    <div class="background">
+    <div id="back" class="back back1 back2">
+    
+    <div class="banner">
+        <img id="banner" src="banner.jpg" alt="">
+    </div>
+    
+    </div></div>
+
+    <div class="avatar">
+        <img id="avatar" src="avatar.png" alt="">
+    </div>
+   
+    <div class="info">
+
+        <h1>
+          <span id="displayName">Erro User</span>
+          <img id="certified" width="20" height="20">
+          <img id="plus" width="20" height="20">
+        </h1>
+
+        <p>@<span id="username">Erro User</span></p>
+
+        <div class="statistik">
+
+            <div>
+                <b id="friends">0</b>
+                <span>Teman</span>
+            </div>
+
+            <div>
+                <b id="followers">0</b>
+                <span>Pengikut</span>
+            </div>
+
+            <div>
+                <b id="following">0</b>
+                <span>Mengikuti</span>
+            </div>
+
+        </div>
+
+        <p id="bio">
+        </p>
+
+        <div class="tombol">
+
+            <button id="editAvatar">
+                Roblox
+            </button>
+
+            <button id="editProfil">
+                YouTube
+            </button>
+
+            <button id="menu">
+                ⋯
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<nav class="tab">
+
+    <button id="tabTentang">
+        Tentang
+    </button>
+
+    <button id="tabKreasi">
+        Kreasi
+    </button>
+
+</nav>
+
+<section id="tentang">
+
+    <h3>Saat Ini Memakai</h3>
+    <div id="memakai"></div>
+
+    <h3>Simpan Halaman</h3>
+    <div id="Simpan-Halaman"></div>
+
+    <h3>Favorit</h3>
+    <div id="favorit"></div>
+
+</section>
+
+<section id="kreasi" hidden>
+
+    <h3>Kreasi</h3>
+
+    <div id="gameList"></div>
+
+</section>
+
+</main>
+
+<div class="content"></div>
+
+<div class="footer-links">
+    <a id="link5"></a>
+    <a id="link6"></a>
+    <a id="link7"></a>
+    <a id="link8"></a>
+</div>
+
+<hr>
+
+<div id="text1" class="copyright"></div>
+<div id="text2" class="copyright"></div>
+
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+const user = params.get("user");
+
+if (user) {
+    const userScript = document.createElement("script");
+    userScript.src = `/script/users/${encodeURIComponent(user)}.js`;
+
+    userScript.onload = () => {
+        const profilScript = document.createElement("script");
+        profilScript.src = "/script/users/profil.js";
+        document.body.appendChild(profilScript);
+    };
+
+    userScript.onerror = () => {
+        console.log("User tidak ditemukan.");
+    };
+
+    document.body.appendChild(userScript);
+}
+</script>
+<script src="/script/halaman-utama.js"></script>
+
+</body>
+</html>
