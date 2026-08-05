@@ -132,8 +132,21 @@ const users = [];
 <script>
 const hasil = document.getElementById("hasil");
 
-function tampil(data) {
-    hasil.innerHTML = "";
+let semuaUser = [];
+let jumlahTampil = 20; // tampil pertama
+const perLoad = 20;    // tambah setiap scroll
+
+// Urutkan A-Z
+users.sort((a, b) =>
+    a.displayName.localeCompare(b.displayName, "id", {
+        sensitivity: "base"
+    })
+);
+
+semuaUser = users;
+
+function tampil(data, reset = true) {
+    if (reset) hasil.innerHTML = "";
 
     data.forEach(user => {
         hasil.innerHTML += `
@@ -153,20 +166,42 @@ function tampil(data) {
         `;
     });
 }
- 
-tampil(users);
 
-document.getElementById("search").addEventListener("input", function(){
+function tampilAwal() {
+    hasil.innerHTML = "";
+    tampil(semuaUser.slice(0, jumlahTampil), false);
+}
+
+tampilAwal();
+
+// Scroll otomatis tambah data
+window.addEventListener("scroll", () => {
+    if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 100
+    ) {
+        if (jumlahTampil < semuaUser.length) {
+            const lama = jumlahTampil;
+            jumlahTampil += perLoad;
+            tampil(semuaUser.slice(lama, jumlahTampil), false);
+        }
+    }
+});
+
+// Pencarian
+document.getElementById("search").addEventListener("input", function () {
 
     const cari = this.value.toLowerCase();
 
-    tampil(users.filter(user =>
+    semuaUser = users.filter(user =>
         user.displayName.toLowerCase().includes(cari) ||
         user.username.toLowerCase().includes(cari)
-    ));
+    );
+
+    jumlahTampil = 20;
+    tampilAwal();
 
 });
 </script>
-
 </body>
 </html>
