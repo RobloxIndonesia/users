@@ -280,7 +280,7 @@
 
 </section>
 
-<section id="kreasi" hidden>
+<section id="kreasi">
 
     <h3>Kreasi</h3>
 
@@ -306,24 +306,25 @@
 
 
 <script>
-    const params = new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
 const user = params.get("user");
 
 if (user) {
-    const userScript = document.createElement("script");
-    userScript.src = `/script/users/${encodeURIComponent(user)}.js`;
+    fetch(`/script/users/${encodeURIComponent(user)}.json`)
+        .then(response => {
+            if (!response.ok) throw new Error("JSON tidak ditemukan");
+            return response.json();
+        })
+        .then(data => {
+            window.__profilData = data;
 
-    userScript.onload = () => {
-        const profilScript = document.createElement("script");
-        profilScript.src = "/script/users/profil.js";
-        document.body.appendChild(profilScript);
-    };
-
-    userScript.onerror = () => {
-        console.log("User tidak ditemukan.");
-    };
-
-    document.body.appendChild(userScript);
+            const script = document.createElement("script");
+            script.src = "/script/profil.js";
+            script.onload = () => console.log("profil.js berhasil dimuat");
+            script.onerror = () => console.log("profil.js gagal dimuat");
+            document.body.appendChild(script);
+        })
+        .catch(error => console.log(error));
 }
 </script>
 <script src="/script/halaman-utama.js"></script>

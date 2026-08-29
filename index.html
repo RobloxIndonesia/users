@@ -249,70 +249,168 @@
 <script src="/script/halaman-utama.js"></script>
 
 <script>
-const users = [];
-</script>
-
-<script src="/script/search/search1.js"></script>
-<script src="/script/search/search2.js"></script>
-<script src="/script/search/search3.js"></script>
-
-<script>
 const hasil = document.getElementById("hasil");
 
+let users = [];
 let semuaUser = [];
-let jumlahTampil = 20; // tampil pertama
-const perLoad = 20;    // tambah setiap scroll
+let jumlahTampil = 20;
+const perLoad = 20;
 
-// Urutkan A-Z
-users.sort((a, b) =>
-    a.displayName.localeCompare(b.displayName, "id", {
-        sensitivity: "base"
-    })
-);
+// Daftar file JSON
+const fileJSON = [
+    "/script/users/roblox.json",
+    "/script/users/robloxindonesia_old.json",
+    "/script/users/builderman.json",
+    "/script/users/al_rafasya10.json",
+    "/script/users/aping_37210.json",
+    "/script/users/robiox_lndo.json",
+    "/script/users/atharazka17.json",
+    "/script/users/faridgaming_730.json",
+    "/script/users/fatihrahman_21.json",
+    "/script/users/deden_sn.json",
+    "/script/users/frank70088.json",
+    "/script/users/kitaakanmenjaditeman.json",
+    "/script/users/limus49.json",
+    "/script/users/rasyid_cooikidd27.json",
+    "/script/users/azure7967.json",
+    "/script/users/psim094.json",
+    "/script/users/masdwi77.json",
+    "/script/users/irfanhadifgaming2.json",
+    "/script/users/expandtemplet.json",
+    "/script/users/hayo_go.json",
+    "/script/users/maulanaasgaf.json",
+    "/script/users/miminloveroblox.json",
+    "/script/users/kimonoxx.json",
+    "/script/users/zharziu.json",
+    "/script/users/akudaf_6802.json"
+];
 
-semuaUser = users;
+// Memuat semua JSON
+Promise.all(
+    fileJSON.map(file =>
+        fetch(file)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Gagal memuat " + file);
+                }
+                return response.json();
+            })
+    )
+)
+.then(semuaData => {
+
+    // Gabungkan semua JSON
+    users = semuaData.flat();
+
+    // Urutkan A-Z
+    users.sort((a, b) =>
+        a.displayName.localeCompare(b.displayName, "id", {
+            sensitivity: "base"
+        })
+    );
+
+    semuaUser = users;
+
+    tampilAwal();
+
+})
+.catch(error => {
+    console.error("JSON:", error);
+    hasil.innerHTML = "<p>Data pengguna gagal dimuat.</p>";
+});
+
+
+// =========================
+// TAMPILKAN USER
+// =========================
 
 function tampil(data, reset = true) {
     if (reset) hasil.innerHTML = "";
 
     data.forEach(user => {
+
+        const avatar = user.avatarHeadshotUrl || user.imageUrl || "";
+        const username = user.name || "";
+        const displayName = user.displayName || username;
+
+        const verified = user.hasVerifiedBadge === true
+            ? `<img src="/iconsvg/certified.svg"
+                    width="15"
+                    height="15"
+                    alt="Verified">`
+            : "";
+
         hasil.innerHTML += `
-        <a href="/users/profil.html?user=${user.username}" style="text-decoration:none;color:black;">
-            <div class="user">
-                <img class="img" src="${user.avatar}" width="70">
-                <div class="info">
-                    <h3>
-                        ${user.displayName}
-                        <img src="${user.certified}">
-                        <img src="${user.plus}">
-                    </h3>
-                    <p>${user.username}</p>
+<a href="/users/profil.html?user=${encodeURIComponent(username.toLowerCase())}"
+   style="text-decoration:none;color:black;">
+
+                <div class="user">
+
+                    <img
+                        class="img"
+                        src="${avatar}"
+                        width="70"
+                        height="70"
+                        alt="${displayName}"
+                    >
+
+                    <div class="info">
+
+                        <h3>
+                            ${displayName}
+                            ${verified}
+                        </h3>
+
+                        <p>@${username}</p>
+
+                    </div>
+
                 </div>
-            </div>
-        </a>
+
+            </a>
         `;
     });
 }
 
+// =========================
+// TAMPIL AWAL
+// =========================
+
 function tampilAwal() {
+
     hasil.innerHTML = "";
-    tampil(semuaUser.slice(0, jumlahTampil), false);
+
+    tampil(
+        semuaUser.slice(0, jumlahTampil),
+        false
+    );
 }
 
-tampilAwal();
 
-// Scroll otomatis tambah data
+// =========================
+// LOAD SAAT SCROLL
+// =========================
+
 window.addEventListener("scroll", () => {
+
     if (
         window.innerHeight + window.scrollY >=
         document.body.offsetHeight - 100
     ) {
+
         if (jumlahTampil < semuaUser.length) {
+
             const lama = jumlahTampil;
+
             jumlahTampil += perLoad;
-            tampil(semuaUser.slice(lama, jumlahTampil), false);
+
+            tampil(
+                semuaUser.slice(lama, jumlahTampil),
+                false
+            );
         }
     }
+
 });
 
 // Pencarian
@@ -320,10 +418,16 @@ document.getElementById("search").addEventListener("input", function () {
 
     const cari = this.value.toLowerCase();
 
-    semuaUser = users.filter(user =>
-        user.displayName.toLowerCase().includes(cari) ||
-        user.username.toLowerCase().includes(cari)
-    );
+    semuaUser = users.filter(user => {
+
+        const displayName = (user.displayName || "").toLowerCase();
+        const username = (user.name || "").toLowerCase();
+
+        return (
+            displayName.includes(cari) ||
+            username.includes(cari)
+        );
+    });
 
     jumlahTampil = 20;
     tampilAwal();
