@@ -197,12 +197,12 @@
     <div class="info">
 
         <h1>
-          <span id="displayName">Usermane Tidak Di temukan</span>
+          <span id="displayName">Usermane Tidak Ada</span>
           <img id="certified"src="/iconsvg/icon.svg" width="20" height="20">
           <img id="plus" src="/iconsvg/icon.svg" width="20" height="20">
         </h1>
 
-        <p>@<span id="username">Username Tidak Di Temukan</span></p>
+        <p>@<span id="username">Username Tidak Ada</span></p>
 
         <div class="statistik">
 
@@ -233,7 +233,7 @@
             </button>
 
             <button id="editProfil">
-                YouTube
+                Edit Profil
             </button>
 
             <button id="menu">
@@ -304,30 +304,75 @@
 <div id="text1" class="copyright"></div>
 <div id="text2" class="copyright"></div>
 
+<!-- Popup Edit Profil -->
 
+<div class="popup" id="popupProfil">
+<div class="card1">
+
+<h2>Edit Profil</h2>
+<p>Peringatan Ini Hanya Edit Tampilan Bukan Simpan Beneran❗</p>
+
+<input id="inputDisplay" placeholder="Display Name">
+<input id="inputUsername" placeholder="Username">
+<textarea id="inputDescription" placeholder="Deskripsi"></textarea>
+
+<input id="inputFriends" type="number" placeholder="Teman">
+<input id="inputFollowers" type="number" placeholder="Pengikut">
+<input id="inputFollowing" type="number" placeholder="Mengikuti">
+
+
+<label><input type="checkbox" id="inputVerified">Vertifikasi</label>
+<label><input type="checkbox" id="inputPlus">Plus</label>
+
+<button id="saveProfil">Simpan</button>
+<button id="closeProfil">Batal</button>
+
+</div>
+</div>
+
+<script src="/script/halaman-utama.js"></script>
 <script>
 const params = new URLSearchParams(window.location.search);
 const user = params.get("user");
 
 if (user) {
+
     fetch(`/script/users/${encodeURIComponent(user)}.json`)
         .then(response => {
-            if (!response.ok) throw new Error("JSON tidak ditemukan");
-            return response.json();
-        })
-        .then(data => {
-            window.__profilData = data;
 
-            const script = document.createElement("script");
-            script.src = "/script/profil.js";
-            script.onload = () => console.log("profil.js berhasil dimuat");
-            script.onerror = () => console.log("profil.js gagal dimuat");
-            document.body.appendChild(script);
+            if (!response.ok) {
+                throw new Error("JSON tidak ditemukan");
+            }
+
+            return response.json();
+
         })
-        .catch(error => console.log(error));
+        .then(json => {
+
+            // JSON sudah berhasil dimuat
+            window.__profilData = json;
+
+            // Jalankan profil.js
+            const script = document.createElement("script");
+
+            script.src = "/script/profil.js";
+
+            script.onload = () => {
+                console.log("profil.js berhasil dimuat");
+            };
+
+            script.onerror = () => {
+                console.log("profil.js gagal dimuat");
+            };
+
+            document.body.appendChild(script);
+
+        })
+        .catch(error => {
+            console.error("Gagal memuat profil:", error);
+        });
+
 }
 </script>
-<script src="/script/halaman-utama.js"></script>
-
 </body>
 </html>
